@@ -4,7 +4,11 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST'], // Adjust the allowed methods as per your API requirements
+    credentials: true // Allow sending cookies and other credentials with the request
+  }));
 
 app.use(bodyParser.urlencoded({extended:true}));
 
