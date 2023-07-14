@@ -16,6 +16,8 @@ module.exports = (app) =>{
 
     app.get('/chats/:id', chats.findOne);
 
+    app.get('/chats/:user_loged/:user_requested', chats.findChat);
+
     app.post('/chats', chats.create);
 
     app.get('/chats', chats.findAll);
@@ -27,11 +29,13 @@ module.exports = (app) =>{
     //chatDetail
     const chatDetails = require('../controllers/chatDetail.controller');
 
-    app.get('/chatDetails/:id', chatDetails.findOne);
+    //app.get('/chatDetails/:id', chatDetails.findOne);
 
     app.post('/chatDetails', chatDetails.create);
 
-    app.get('/chatDetails', chatDetails.findAll);
+    app.get('/chatDetails/:id', chatDetails.findAll);
+
+   // app.get('/chatDetails', chatDetails.findOneChat);
 
     app.put('/chatDetails/:id', chatDetails.update);
 

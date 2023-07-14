@@ -8,9 +8,10 @@ exports.create = (req, res) =>{
      }
  
      const chatDetail = new ChatDetail({
-        chat_id : req.body.chat_id || 'Untitled',
+        chat_id : req.body.chat_id,
         user_id: req.body.user_id,
-        chat_text: req.body.chat_text
+        chat_text: req.body.chat_text,
+        group_id: -1,
      })
  
      chatDetail.save()
@@ -45,7 +46,11 @@ exports.update = (req, res) =>{
 })}
 
 exports.findAll =(req, res) =>{
-    ChatDetail.find().then( chatDetails =>{
+    const id = req.params.id;
+    
+    ChatDetail.find({
+        chat_id: id
+    }).then( chatDetails =>{
         res.send(chatDetails)
         }
     ).catch( err =>{
@@ -60,13 +65,15 @@ exports.findOne = (req, res) => {
     return new Promise((resolve, reject) => {
         const id = req.params.id;
 
-        ChatDetail.findById(id)
+        ChatDetail.findOne({
+            chat_id: id
+        })
             .then(chatDetails => {
                 if (!chatDetails) {
                     res.status(400).send({
-                        'message': 'Student info not available!'
+                        'message': 'Chat info not available!'
                     });
-                    reject(new Error('Student info not available!'));
+                    //reject(new Error('Chat info not available!'));
                 } else {
                     res.send(chatDetails);
                     resolve(chatDetails);
@@ -82,6 +89,35 @@ exports.findOne = (req, res) => {
     });
 };
 
+exports.findOneChat = (req, res) => {
+    return new Promise((resolve, reject) => {
+        const id = req.params.id;
+
+        ChatDetail.findOne({
+            chat_id: id
+        })
+            .then(chatDetails => {
+                if (!chatDetails) {
+                    res.status(400).send({
+                        'message': 'Chat info not available!'
+                    });
+                   // reject(new Error('Chat info not available!'));
+                } else {
+                    res.send(chatDetails);
+                    resolve(chatDetails);
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    'message': 'Something went wrong!!',
+                    'error': err
+                });
+                //reject(err);
+            });
+    });
+};
+
+
 exports.delete = (req, res) =>{
     const id = req.params.id;
     ChatDetail.findByIdAndRemove(id).then( chatDetails =>{
@@ -96,3 +132,5 @@ exports.delete = (req, res) =>{
         })
     })
 }
+
+

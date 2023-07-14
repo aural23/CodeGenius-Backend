@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const ChatDetailSchema = mongoose.Schema({
-    chat_id: String,
     user_id: String,
+    group_id: Number,
+    chat_id: String,
     chat_text: String
 },{
     timestamps: true
