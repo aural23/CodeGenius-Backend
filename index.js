@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-    origin: 'https://codegenius.onrender.com',
+    origin: 'https://code-genius-3qefgl9m8-aural23.vercel.app/',
     methods: ['GET', 'POST'], // Adjust the allowed methods as per your API requirements
     credentials: true // Allow sending cookies and other credentials with the request
   }));
