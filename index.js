@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors({
-    origin: 'https://code-genius-psi.vercel.app',
+    origin: 'http://localhost:4200',
     methods: ['GET', 'POST'], // Adjust the allowed methods as per your API requirements
     credentials: true // Allow sending cookies and other credentials with the request
   }));
