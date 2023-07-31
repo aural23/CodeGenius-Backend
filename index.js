@@ -4,13 +4,41 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors({
-    origin: 'https://code-genius-psi.vercel.app',
-    methods: ['GET', 'POST'], // Adjust the allowed methods as per your API requirements
-    credentials: true // Allow sending cookies and other credentials with the request
-  }));
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(cors({
+    // origin: 'https://code-genius-psi.vercel.app', // For production
+    origin: 'http://localhost:4200', // Fot testing in local machine
+    methods: ['GET', 'POST'],
+    credentials: true
+}));
+
+
+// Express middle ware import
+// app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+
+// Handle socket connections
+io.on('connection', (socket) => {
+    console.log('A user connected');
+
+    // Handle incoming chat messages
+    socket.on('chat message', (msg) => {
+        console.log('Message:', msg);
+
+        // Broadcast the message to all connected clients
+        io.emit('chat message', msg);
+    });
+
+    // Handle user disconnection
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+});
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(bodyParser.json());
 //MongoDB connection
@@ -18,14 +46,14 @@ const dbConfig = require('./config/project.config');
 const mongoose = require('mongoose');
 
 mongoose.connect(dbConfig.url, {
-    useNewUrlParser:true
-}).then(()=>console.log("DB connection successful"))
-    .catch(err =>{
+    useNewUrlParser: true
+}).then(() => console.log("DB connection successful"))
+    .catch(err => {
         console.log("DB connection is not successful... ", err);
     })
 
 
-app.get('/', (req, res)=>{
+app.get('/', (req, res) => {
     res.json({
         "message": "It is working!!"
     })
@@ -33,7 +61,7 @@ app.get('/', (req, res)=>{
 
 require('./app/routes/project.route')(app)
 
-app.listen(4000, ()=>{
+app.listen(4000, () => {
     console.log('server is running!!!!!')
 })
 
