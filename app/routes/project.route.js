@@ -3,6 +3,8 @@ module.exports = (app) =>{
 
     app.get('/users/:id', users.findOne);
 
+    app.get('/getFriends/:id', users.findFriends);
+
     app.post('/login', users.findByUsername);
 
     app.post('/users', users.create);

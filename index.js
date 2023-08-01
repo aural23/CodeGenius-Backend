@@ -5,7 +5,12 @@ const cors = require('cors');
 const app = express();
 
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+    cors: {
+        origin: "http://localhost:4200",
+        methods: ["GET", "POST"]
+    }
+});
 
 app.use(cors({
     // origin: 'https://code-genius-psi.vercel.app', // For production
@@ -22,19 +27,22 @@ app.use(express.static('public'));
 
 // Handle socket connections
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    console.log('a user connected');
+    var users = []; // Array to store connected users
 
-    // Handle incoming chat messages
-    socket.on('chat message', (msg) => {
-        console.log('Message:', msg);
-
-        // Broadcast the message to all connected clients
-        io.emit('chat message', msg);
+    socket.on('send-nickname', (userName) => {
+        socket.nickname = userName;
+        users.push(socket.nickname);
+        console.log(users);
     });
 
-    // Handle user disconnection
+    socket.on('message', (message) => {
+        console.log(message);
+        io.emit('message', `${message}`, `${socket.userName}`);
+    });
+
     socket.on('disconnect', () => {
-        console.log('A user disconnected');
+        console.log('a user disconnected!');
     });
 });
 
@@ -61,7 +69,7 @@ app.get('/', (req, res) => {
 
 require('./app/routes/project.route')(app)
 
-app.listen(4000, () => {
+http.listen(4000, () => {
     console.log('server is running!!!!!')
 })
 
